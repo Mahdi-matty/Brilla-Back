@@ -1,0 +1,2 @@
+DROP DATABASE IF EXISTS brilla_db;
+CREATE DATABASE brilla_db;
