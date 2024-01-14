@@ -4,11 +4,13 @@ const {Student, Teacher} = require('../models')
 const bcrypt = require("bcrypt");
 const studentRoute = require('./studentRoutes')
 const teacherRoute = require('./teacherRoutes')
+const postRoutes = require('./postRoutes')
 
 
 
 router.use('/api/students', studentRoute);
-router.use('/api/teachers', teacherRoute)
+router.use('/api/teachers', teacherRoute);
+router.use('./api/posts', postRoutes)
 
 router.get("/",(req,res)=>{
      res.render("home")        
