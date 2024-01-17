@@ -1,23 +1,36 @@
 const Teacher = require('./teacher');
 const Student = require('./student');
-const Post = require('./post')
+const Subject = require(`./subject`);
+const Topic = require(`./topic`);
+const Card = require('./card')
 
-Teacher.hasMany(Student, {
-    foreignKey: 'teacher_id',
-})
-Student.belongsToMany(Teacher, {
-    foreignKey: 'teacher_id',
-})
-Student.hasMany(Post, {
-    foreignKey: 'user_id'
-})
-Post.belongsTo(Student, {
-    foreignKey: 'user_id'
-})
+// students and subjects
+Student.hasMany(Subject, {
+    onDelete: `CASCADE`
+});
+Subject.belongsTo(Student);
 
+// subjects and topics
+Subject.hasMany(Topic, {
+    onDelete: `CASCADE`
+});
+Topic.belongsTo(Subject);
+
+// topics and cards
+Topic.hasMany(Card, {
+    onDelete: `CASCADE`
+});
+Card.belongsTo(Topic);
+
+// cards and students (creator)
+
+
+// cards and students (viewers)
 
 module.exports= {
     Teacher,
     Student,
-    Post
+    Card, 
+    Subject,
+    Topic
 }

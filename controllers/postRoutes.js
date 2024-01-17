@@ -1,7 +1,5 @@
 const express = require('express');
 const router = express.Router();
-const bcrypt = require("bcrypt");
-const isMyPost = require("../middleware/isMyPost");
 const {Student, Post} = require('../models');
 
 //find all
@@ -66,6 +64,7 @@ router.post("/", isAuthenticated, (req, res) => {
       res.status(500).json({ msg: "oh no!", err });
     });
 });
+
 router.get('/search', (req, res) => {
   const { tag } = req.query;
   console.log('Received Search Query:', tag);
@@ -84,50 +83,52 @@ router.get('/search', (req, res) => {
       res.status(500).json({ msg: "Error during search", err });
     });
 });
-  //edit
-  router.put("/:id", isAuthenticated, (req, res) => {
-    Post.update(
-      {
-        title: req.body.title,
-        content: req.body.content,
-        user_id: req.body.user_id,
-        UserId: req.session.user.id,
-      },
-      {
-        where: {
-          id: req.params.id,
-          UserId:req.session.user.id
-        },
-      }
-    )
-      .then((editedPost) => {
-        if (!editedPost[0]) {
-          res.status(404).json({ msg: "no such Like!" });
-        } else {
-          res.json(editedPost);
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({ msg: "oh no!", err });
-      });
-    });
-  //delete
-  router.delete("/:id", isAuthenticated, (req, res) => {
-    Post.destroy({
+
+//edit
+router.put("/:id", isAuthenticated, (req, res) => {
+  Post.update(
+    {
+      title: req.body.title,
+      content: req.body.content,
+      user_id: req.body.user_id,
+      UserId: req.session.user.id,
+    },
+    {
       where: {
         id: req.params.id,
+        UserId:req.session.user.id
       },
-    })
-      .then((delPost) => {
-        if (!delPost) {
-          res.status(404).json({ msg: "no such post!" });
-        } else {
-          res.json(delPost);
-        }
-      })
-      .catch((err) => {
-        res.status(500).json({ msg: "oh no!", err });
-      });
+    }
+  )
+  .then((editedPost) => {
+    if (!editedPost[0]) {
+      res.status(404).json({ msg: "no such Like!" });
+    } else {
+      res.json(editedPost);
+    }
+  })
+  .catch((err) => {
+    res.status(500).json({ msg: "oh no!", err });
   });
+});
+
+//delete
+router.delete("/:id", isAuthenticated, (req, res) => {
+  Post.destroy({
+    where: {
+      id: req.params.id,
+    },
+  })
+    .then((delPost) => {
+      if (!delPost) {
+        res.status(404).json({ msg: "no such post!" });
+      } else {
+        res.json(delPost);
+      }
+    })
+    .catch((err) => {
+      res.status(500).json({ msg: "oh no!", err });
+    });
+});
   
   module.exports = router;
