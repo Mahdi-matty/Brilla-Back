@@ -1,11 +1,11 @@
 const express = require('express');
 const router = express.Router();
-const {Student, Post} = require('../models');
+const {Student, Card} = require('../models');
 
 //find all
 router.get("/",(req,res)=>{
-    Post.findAll().then(dbPosts=>{
-        res.json(dbPosts)
+    Card.findAll().then(dbCards=>{
+        res.json(dbCards)
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
@@ -15,18 +15,18 @@ router.get("/logout",(req,res)=>{
     res.send("logged out!")
 })
 
-//query or route to find posts linked to a single user
+//query or route to find cards linked to a single user
 router.get("/:id",(req,res)=>{
-    Post.findAll({
+    Card.findAll({
       where:{
         user_id:req.params.id
       },
       include:[Student]
-    }).then(dbPosts=>{
-        if(!dbPosts){
-            res.status(404).json({msg:"no such post!"})
+    }).then(dbCards=>{
+        if(!dbCards){
+            res.status(404).json({msg:"no such Card!"})
         } else{
-            res.json(dbPosts)
+            res.json(dbCards)
         }
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
@@ -51,14 +51,14 @@ router.post("/", isAuthenticated, (req, res) => {
   const { title, content, user_id } = req.body;
   console.log("Received Request Data:", { title, content, user_id });
 //   const hashtags = extractHashtags(title);
-  Post.create({
+  Card.create({
     title,
     content,
     user_id,
     // hashtags,
   })
-    .then((newPost) => {
-      res.json(newPost);
+    .then((newCard) => {
+      res.json(newCard);
     })
     .catch((err) => {
       res.status(500).json({ msg: "oh no!", err });
@@ -69,7 +69,7 @@ router.get('/search', (req, res) => {
   const { tag } = req.query;
   console.log('Received Search Query:', tag);
   
-  Post.findAll({
+  Card.findAll({
     where: {
       title: {
         [Op.like]: `%#${tag}%`,
@@ -86,7 +86,7 @@ router.get('/search', (req, res) => {
 
 //edit
 router.put("/:id", isAuthenticated, (req, res) => {
-  Post.update(
+  Card.update(
     {
       title: req.body.title,
       content: req.body.content,
@@ -100,11 +100,11 @@ router.put("/:id", isAuthenticated, (req, res) => {
       },
     }
   )
-  .then((editedPost) => {
-    if (!editedPost[0]) {
+  .then((editedCard) => {
+    if (!editedCard[0]) {
       res.status(404).json({ msg: "no such Like!" });
     } else {
-      res.json(editedPost);
+      res.json(editedCard);
     }
   })
   .catch((err) => {
@@ -114,16 +114,16 @@ router.put("/:id", isAuthenticated, (req, res) => {
 
 //delete
 router.delete("/:id", isAuthenticated, (req, res) => {
-  Post.destroy({
+  Card.destroy({
     where: {
       id: req.params.id,
     },
   })
-    .then((delPost) => {
-      if (!delPost) {
-        res.status(404).json({ msg: "no such post!" });
+    .then((delCard) => {
+      if (!delCard) {
+        res.status(404).json({ msg: "no such Card!" });
       } else {
-        res.json(delPost);
+        res.json(delCard);
       }
     })
     .catch((err) => {
@@ -131,4 +131,4 @@ router.delete("/:id", isAuthenticated, (req, res) => {
     });
 });
   
-  module.exports = router;
+module.exports = router;

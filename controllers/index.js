@@ -2,14 +2,14 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 
-const studentRoute = require('./studentRoutes');
-router.use('/api/students', studentRoute);
+const studentRoutes = require('./studentRoutes');
+router.use('/api/students', studentRoutes);
 
-const teacherRoute = require('./teacherRoutes');
-router.use('/api/teachers', teacherRoute);
+const teacherRoutes = require('./teacherRoutes');
+router.use('/api/teachers', teacherRoutes);
 
-const postRoutes = require('./postRoutes');
-router.use('./api/posts', postRoutes)
+const cardRoutes = require('./cardRoutes');
+router.use('./api/cards', cardRoutes)
 
 router.get("/",(req,res)=>{
      res.render("home")        
