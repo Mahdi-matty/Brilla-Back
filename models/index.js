@@ -23,9 +23,11 @@ Topic.hasMany(Card, {
 Card.belongsTo(Topic);
 
 // cards and students (creator)
+Student.hasMany(Card, {
+    onDelete: `CASCADE`
+})
+Card.belongsTo(Student);
 
-
-// cards and students (viewers)
 
 module.exports= {
     Teacher,
