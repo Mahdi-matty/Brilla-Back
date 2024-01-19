@@ -12,20 +12,66 @@ router.get("/",(req,res)=>{
     })
 })
 
-// router.get("/logout",(req,res)=>{
-//     req.session.destroy();
-//     res.send("logged out!")
-// })
-
 //find one
 router.get("/:id",(req,res)=>{
     Student.findByPk(req.params.id,{
-        include:[Subject, Topic, Card]
+        include:[Subject, Card]
     }).then(dbUser=>{
         if(!dbUser){
             res.status(404).json({msg:"no such user!"})
         } else{
             res.json(dbUser)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
+//create
+router.post("/",(req,res)=>{
+    Student.create({
+        username:req.body.username,
+        password:req.body.password,
+        email: req.body.email,
+    }).then(newUser=>{
+        res.json(newUser)
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
+//edit
+router.put("/:id",(req,res)=>{
+    Student.update({
+        username:req.body.username,
+        password:req.body.password,
+        email: req.body.email,
+    },{
+        where:{
+            id:req.params.id
+        }
+    }).then(editUser=>{
+        if(!editUser[0]){
+            res.status(404).json({msg:"no such user!"})
+        } else{
+            res.json(editUser[0])
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
+//delete
+router.delete("/:id",(req,res)=>{
+    Student.destroy({
+        where:{
+            id:req.params.id
+        }
+    }).then(delUser=>{
+        if(!delUser){
+            res.status(404).json({msg:"no such user!"})
+        } else{
+            res.json(delUser)
         }
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
@@ -50,6 +96,7 @@ router.get("/:id",(req,res)=>{
 //       res.status(500).json({ error: 'Internal Server Error' });
 //     }
 //   });
+
 // //find by username
 // router.get("/findUser/:id",(req,res)=>{
 //     Student.findOne({
@@ -71,6 +118,7 @@ router.get("/:id",(req,res)=>{
 //         res.status(500).json({msg:"oh no!",err})
 //     })
 // });
+
 // router.get('/getUsernameById/:id', async (req, res) => {
 //     try {
 //       const id = req.params.id;
@@ -90,18 +138,6 @@ router.get("/:id",(req,res)=>{
 //     }
 //   });
 
-// //create
-// router.post("/",(req,res)=>{
-//     Student.create({
-//         username:req.body.username,
-//         password:req.body.password,
-//         email: req.body.email,
-//     }).then(newUser=>{
-//         res.json(newUser)
-//     }).catch(err=>{
-//         res.status(500).json({msg:"oh no!",err})
-//     })
-// })
 // //login
 // router.get("/login",(req,res)=>{
 //     //1. find the user who is trying to login
@@ -125,41 +161,10 @@ router.get("/:id",(req,res)=>{
 //         }
 //     })
 // })
-// //edit
-// router.put("/:id",(req,res)=>{
-//     Student.update({
-//         username:req.body.username,
-//         password:req.body.password,
-//         email: req.body.email,
-//     },{
-//         where:{
-//             id:req.params.id
-//         }
-//     }).then(editUser=>{
-//         if(!editUser[0]){
-//             res.status(404).json({msg:"no such user!"})
-//         } else{
-//             res.json(editUser)
-//         }
-//     }).catch(err=>{
-//         res.status(500).json({msg:"oh no!",err})
-//     })
-// })
-// //delete
-// router.delete("/:id",(req,res)=>{
-//     Student.destroy({
-//         where:{
-//             id:req.params.id
-//         }
-//     }).then(delUser=>{
-//         if(!delUser){
-//             res.status(404).json({msg:"no such user!"})
-//         } else{
-//             res.json(delUser)
-//         }
-//     }).catch(err=>{
-//         res.status(500).json({msg:"oh no!",err})
-//     })
+
+// router.get("/logout",(req,res)=>{
+//     req.session.destroy();
+//     res.send("logged out!")
 // })
 
 
