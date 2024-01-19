@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const {Student, Subject, Topic, Card} = require('../models');
-const jwt = require("jsonwebtoken")
+const jwt = require("jsonwebtoken");
 
 //find all
 router.get("/",(req,res)=>{
@@ -80,34 +80,51 @@ router.delete("/:id",(req,res)=>{
 });
 
 //login
-router.get("/login",(req,res)=>{
+router.post("/login",(req,res)=>{
     //1. find the user who is trying to login
     Student.findOne({
         where:{
             username:req.body.username
         }
     }).then(foundUser=>{
-        if(!foundUser){
-            res.status(401).json({msg:"Invalid username/password"})
-        } else {
-            if(!bcrypt.compareSync(req.body.password,foundUser.password)){
-                res.status(401).json({msg:"Invalid username/password"})
-            } else {
-                req.session.user = {
-                    id:foundUser.id,
-                    username:foundUser.username
-                }
-                res.json(foundUser)
-            }
-        }
+        if(!foundUser || !bcrypt.compareSync(req.body.password,foundUser.password)){
+            return res.status(401).json({msg:"invalid login credentials"})
+        };
+        const token = jwt.sign({
+            email:foundUser.email,
+            id:foundUser.id
+        },process.env.JWT_SECRET,{
+            expiresIn:"2h"
+        })
+        res.json({
+            token,
+            user:foundUser
+        })
+    }).catch(err=>{
+        console.log(err);
+        res.status(500).json({msg:"oh no!",err})
     })
-})
+});
 
-router.get("/logout",(req,res)=>{
+// // GET logout route
+// router.get('/logout', (req, res) => {
+//     // Invalidate the user's session or delete the session token stored on the client-side
+//     req.session.destroy((err) => {
+//       if (err) {
+//         return res.status(500).json({ msg: 'Failed to logout' });
+//       }  
+//       // Clear the session token from a cookie or local storage
+//       res.clearCookie('sessionToken');  
+//       // Send a response indicating successful logout
+//       res.json({ msg: 'Logout successful' });
+//     });
+// });
+// GET logout route
+router.get("/logout", (req, res) => {
     req.session.destroy();
-    res.send("logged out!")
-})
-
+    console.log("Logged out!");
+    res.send("Logged out!");
+});
 
 // router.get('/getUserIdByUsername/:username', async (req, res) => {
 //     try {

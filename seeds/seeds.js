@@ -18,6 +18,21 @@ const studentData = [
     },
 ];
 
+const subjectData = [
+    {
+        title: `Full-Stack Developer`
+    },
+    {
+        title: `Pop-Culture`
+    },
+];
+
+const topicData = [
+    {
+                
+    }
+]
+
 //Encrypt seeded user passwords
 const bcrypt = require("bcryptjs");
 
@@ -28,7 +43,9 @@ for (let studentObj of studentData) {
 // Seeds Function 
 const seedMe = async () => {
     await sequelize.sync({ force: false });
-    const bdStudents = await Student.bulkCreate(studentData);
+    const dbStudents = await Student.bulkCreate(studentData);
+    const dbSubjects = await Subject.bulkCreate(subjectData);
+    const dbTopics = await Topic.bulkCreate(topicData)
     console.log(`Seeding completed :)`);
     process.exit(0)
 };
