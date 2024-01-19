@@ -27,7 +27,7 @@ for (let studentObj of studentData) {
 
 // Seeds Function 
 const seedMe = async () => {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     const bdStudents = await Student.bulkCreate(studentData);
     console.log(`Seeding completed :)`);
     process.exit(0)

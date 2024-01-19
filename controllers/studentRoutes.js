@@ -1,35 +1,36 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const {Student, Teacher} = require('../models');
+const {Student, Subject, Topic, Card} = require('../models');
 
 //find all
 router.get("/",(req,res)=>{
-    Student.findAll().then(dbUsers=>{
-        res.json(dbUsers)
+    Student.findAll().then(dbStudents=>{
+        res.json(dbStudents)
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
 })
-router.get("/logout",(req,res)=>{
-    req.session.destroy();
-    res.send("logged out!")
-})
 
-// //find one
-// router.get("/:id",(req,res)=>{
-//     Student.findByPk(req.params.id,{
-//         include:[Posts, Likes]
-//     }).then(dbUser=>{
-//         if(!dbUser){
-//             res.status(404).json({msg:"no such user!"})
-//         } else{
-//             res.json(dbUser)
-//         }
-//     }).catch(err=>{
-//         res.status(500).json({msg:"oh no!",err})
-//     })
+// router.get("/logout",(req,res)=>{
+//     req.session.destroy();
+//     res.send("logged out!")
 // })
+
+//find one
+router.get("/:id",(req,res)=>{
+    Student.findByPk(req.params.id,{
+        include:[Subject, Topic, Card]
+    }).then(dbUser=>{
+        if(!dbUser){
+            res.status(404).json({msg:"no such user!"})
+        } else{
+            res.json(dbUser)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
 
 // router.get('/getUserIdByUsername/:username', async (req, res) => {
 //     try {
