@@ -11,5 +11,5 @@ Topic.init({
 },{
     sequelize, 
 });
-  
+
 module.exports = Topic;

@@ -2,6 +2,10 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 
+router.get("/",(req,res)=>{
+     res.render("home")        
+});
+
 const studentRoutes = require('./studentRoutes');
 router.use('/api/students', studentRoutes);
 
@@ -10,10 +14,6 @@ router.use('/api/teachers', teacherRoutes);
 
 const cardRoutes = require('./cardRoutes');
 router.use('./api/cards', cardRoutes)
-
-router.get("/",(req,res)=>{
-     res.render("home")        
-});
 
 // router.get("/sessiondata",(req,res)=>{
 //     res.json(req.session)
