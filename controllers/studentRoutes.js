@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const {Student, Subject, Topic, Card} = require('../models');
+const jwt = require("jsonwebtoken")
 
 //find all
 router.get("/",(req,res)=>{
@@ -76,7 +77,37 @@ router.delete("/:id",(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
+});
+
+//login
+router.get("/login",(req,res)=>{
+    //1. find the user who is trying to login
+    Student.findOne({
+        where:{
+            username:req.body.username
+        }
+    }).then(foundUser=>{
+        if(!foundUser){
+            res.status(401).json({msg:"Invalid username/password"})
+        } else {
+            if(!bcrypt.compareSync(req.body.password,foundUser.password)){
+                res.status(401).json({msg:"Invalid username/password"})
+            } else {
+                req.session.user = {
+                    id:foundUser.id,
+                    username:foundUser.username
+                }
+                res.json(foundUser)
+            }
+        }
+    })
 })
+
+router.get("/logout",(req,res)=>{
+    req.session.destroy();
+    res.send("logged out!")
+})
+
 
 // router.get('/getUserIdByUsername/:username', async (req, res) => {
 //     try {
@@ -138,34 +169,6 @@ router.delete("/:id",(req,res)=>{
 //     }
 //   });
 
-// //login
-// router.get("/login",(req,res)=>{
-//     //1. find the user who is trying to login
-//     Student.findOne({
-//         where:{
-//             username:req.body.username
-//         }
-//     }).then(foundUser=>{
-//         if(!foundUser){
-//             res.status(401).json({msg:"Invalid username/password"})
-//         } else {
-//             if(!bcrypt.compareSync(req.body.password,foundUser.password)){
-//                 res.status(401).json({msg:"Invalid username/password"})
-//             } else {
-//                 req.session.user = {
-//                     id:foundUser.id,
-//                     username:foundUser.username
-//                 }
-//                 res.json(foundUser)
-//             }
-//         }
-//     })
-// })
-
-// router.get("/logout",(req,res)=>{
-//     req.session.destroy();
-//     res.send("logged out!")
-// })
 
 
 module.exports = router;
