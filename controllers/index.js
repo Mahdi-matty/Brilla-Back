@@ -13,7 +13,7 @@ const teacherRoutes = require('./teacherRoutes');
 router.use('/api/teachers', teacherRoutes);
 
 const cardRoutes = require('./cardRoutes');
-router.use('./api/cards', cardRoutes);
+router.use('/api/cards', cardRoutes);
 
 const subjectRoutes = require(`./subjectRoutes`);
 router.use(`/api/subjects`, subjectRoutes);

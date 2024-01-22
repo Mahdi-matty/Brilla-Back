@@ -13,23 +13,90 @@ router.get("/",(req,res)=>{
     })
 });
 
-//query or route to find cards linked to a single user
+//find one
 router.get("/:id",(req,res)=>{
-    Card.findAll({
-      where:{
-        cardId:req.params.id
-      },
-      include:[Student, Topic]
-    }).then(dbCards=>{
-        if(!dbCards){
+    Card.findByPk(req.params.id,{
+        include:[Topic, Student]
+    }).then(dbCard=>{
+        if(!dbCard){
             res.status(404).json({msg:"no such Card!"})
         } else{
-            res.json(dbCards)
+            res.json(dbCard)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
+//create
+router.post("/",(req,res)=>{
+    Card.create({
+        title: req.body.title,
+        content: req.body.content,
+        difficulty: req.body.difficulty
+    }).then(newCard=>{
+        res.json(newCard)
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
+//edit
+router.put("/:id",(req,res)=>{
+    Card.update({
+        title: req.body.title,
+        content: req.body.content,
+        difficulty: req.body.difficulty
+    },{
+        where:{
+            id:req.params.id
+        }
+    }).then(editCard=>{
+        if(!editCard[0]){
+            res.status(404).json({msg:"no such Card!"})
+        } else{
+            res.json(editCard[0])
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
+//delete
+router.delete("/:id",(req,res)=>{
+    Card.destroy({
+        where:{
+            id:req.params.id
+        }
+    }).then(delCard=>{
+        if(!delCard){
+            res.status(404).json({msg:"no such Card!"})
+        } else{
+            res.json(delCard)
         }
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
 });
+
+
+// //query or route to find cards linked to a single user
+// router.get("/:id",(req,res)=>{
+//     Card.findAll({
+//       where:{
+//         cardId:req.params.id
+//       },
+//       include:[Student, Topic]
+//     }).then(dbCards=>{
+//         if(!dbCards){
+//             res.status(404).json({msg:"no such Card!"})
+//         } else{
+//             res.json(dbCards)
+//         }
+//     }).catch(err=>{
+//         res.status(500).json({msg:"oh no!",err})
+//     })
+// });
 
 // const isAuthenticated = (req, res, next) => {
 //   if (!req.session.user) {
