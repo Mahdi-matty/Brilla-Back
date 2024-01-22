@@ -35,10 +35,10 @@ const topicData = [
         title: `Vanilla JavaScript`
     },
     {
-        title: `REACT`
+        title: `JavaScript`
     },
     {
-        title: `JavaScript`
+        title: `REACT`
     },
     {
         title: `Game of Thrones`
@@ -243,7 +243,7 @@ for (let studentObj of studentData) {
 
 // Seeds Function 
 const seedMe = async () => {
-    await sequelize.sync({ force: true });
+    await sequelize.sync({ force: false });
     const dbStudents = await Student.bulkCreate(studentData);
     const dbSubjects = await Subject.bulkCreate(subjectData);
     const dbTopics = await Topic.bulkCreate(topicData);
@@ -251,16 +251,16 @@ const seedMe = async () => {
     // add relationships between the data
     await dbStudents[0].addSubjects([1, 3]); 
     await dbStudents[1].addSubject([2]); 
-    await dbSubjects[0].addTopics([1, 2]);
-    await dbSubjects[1].addTopics([3]);
+    await dbSubjects[0].addTopics([1, 3]);
+    await dbSubjects[1].addTopics([2]);
     await dbSubjects[2].addTopics([4, 5]);
     await dbTopics[0].addCards([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     await dbStudents[0].addCards([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
     await dbTopics[1].addCards([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
     await dbStudents[1].addCards([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
-    await dbTopics[3].addCards([21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+    await dbTopics[2].addCards([21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
     await dbStudents[0].addCards([21, 22, 23, 24, 25, 26, 27, 28, 29, 30])
-    await dbTopics[4].addCards([31, 32, 33, 34, 35])
+    await dbTopics[3].addCards([31, 32, 33, 34, 35])
     await dbStudents[0].addCards([31, 32, 33, 34, 35])
     console.log(`Seeding completed :)`);
     process.exit(0)
