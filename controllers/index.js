@@ -13,7 +13,13 @@ const teacherRoutes = require('./teacherRoutes');
 router.use('/api/teachers', teacherRoutes);
 
 const cardRoutes = require('./cardRoutes');
-router.use('./api/cards', cardRoutes)
+router.use('./api/cards', cardRoutes);
+
+const subjectRoutes = require(`./subjectRoutes`);
+router.use(`/api/subjects`, subjectRoutes);
+
+const topicRoutes = require(`./topicRoutes`);
+router.use(`/api/topics`, topicRoutes)
 
 // router.get("/sessiondata",(req,res)=>{
 //     res.json(req.session)

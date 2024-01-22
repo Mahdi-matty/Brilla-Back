@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-const {Student, Subject, Topic, Card} = require('../models');
+const {Student, Subject, Card} = require('../models');
 const jwt = require("jsonwebtoken");
 
 //find all
@@ -98,13 +98,29 @@ router.post("/login",(req,res)=>{
         })
         res.json({
             token,
-            user:foundUser
+            student:foundUser
         })
     }).catch(err=>{
         console.log(err);
         res.status(500).json({msg:"oh no!",err})
     })
 });
+
+// Find Session User
+router.get("/session/student", (req, res) => {
+    Student.findByPk(req.session.student.id, {
+        include: [Subject, Card]
+    }).then(dbStudent => {
+        if (!dbStudent) {
+            res.status(404).json({ msg: "no such Student!" })
+        } else {
+            res.json(dbStudent)
+        }
+    }).catch(err => {
+        res.status(500).json({ msg: "oh no!", err })
+    })
+});
+
 
 // // GET logout route
 // router.get('/logout', (req, res) => {
@@ -120,11 +136,11 @@ router.post("/login",(req,res)=>{
 //     });
 // });
 // GET logout route
-router.get("/logout", (req, res) => {
-    req.session.destroy();
-    console.log("Logged out!");
-    res.send("Logged out!");
-});
+// router.get("/logout", (req, res) => {
+//     req.session.destroy();
+//     console.log("Logged out!");
+//     res.send("Logged out!");
+// });
 
 // router.get('/getUserIdByUsername/:username', async (req, res) => {
 //     try {
@@ -161,31 +177,9 @@ router.get("/logout", (req, res) => {
 //             })
 //             // res.json(foundUser)
 //         }
-
 //     }).catch(err=>{
 //         res.status(500).json({msg:"oh no!",err})
 //     })
 // });
-
-// router.get('/getUsernameById/:id', async (req, res) => {
-//     try {
-//       const id = req.params.id;
-//       const user = await Student.findOne({
-//         where: { id: id },
-//         attributes: ['username'],
-//       });
-  
-//       if (user) {
-//         res.json({ username: user.username });
-//       } else {
-//         res.status(404).json({ error: 'Student not found' });
-//       }
-//     } catch (error) {
-//       console.error('Error:', error.message);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   });
-
-
 
 module.exports = router;
