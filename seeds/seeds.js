@@ -156,6 +156,56 @@ const cardData = [
         difficulty: 1,
     },
     // REACT Questions
+    {
+        title: ` What is React?`,
+        content: `React is a JavaScript library for building user interfaces.`,
+        difficulty: 1,
+    },
+    {
+        title: `What is JSX in React?`,
+        content: `JSX is a syntax extension for JavaScript that allows you to write HTML-like code in your JavaScript files`,
+        difficulty: 1,
+    },
+    {
+        title: `What is the virtual DOM in React?`,
+        content: `The virtual DOM is a lightweight copy of the actual DOM that React uses to efficiently update and render components.`,
+        difficulty: 1,
+    },
+    {
+        title: `What are React components?`,
+        content: `React components are reusable, self-contained pieces of code that represent a part of the user interface`,
+        difficulty: 2,
+    },
+    {
+        title: `What is the difference between functional components and class components in React?`,
+        content: `Functional components are simple JavaScript functions that return JSX, while class components are ES6 classes that extend the React.Component class.`,
+        difficulty: 2,
+    },
+    {
+        title: `What is state in React?`,
+        content: `State is an object that holds data and determines how a component renders and behaves.`,
+        difficulty: 2,
+    },
+    {
+        title: `What are React hooks?`,
+        content: `React hooks are functions that allow you to use state and other React features in functional components.`,
+        difficulty: 3,
+    },
+    {
+        title: `What is the purpose of the useEffect hook in React?`,
+        content: `The useEffect hook is used to perform side effects in functional components, such as fetching data from an API or subscribing to events.`,
+        difficulty: 3,
+    },
+    {
+        title: `What is the role of the Redux library in React?`,
+        content: `Redux is a state management library that helps manage the state of an application in a predictable way.`,
+        difficulty: 3,
+    },
+    {
+        title: `What is React Router and how is it used in React applications?`,
+        content: `React Router is a library that allows for routing and navigation in React applications, enabling multiple pages or views within a single-page application.`,
+        difficulty: 3,
+    },
     // GOT Questions
     {
         title: `Who is the author of the "A Song of Ice and Fire" book series, which inspired the Game of Thrones TV show?`,
@@ -204,6 +254,14 @@ const seedMe = async () => {
     await dbSubjects[0].addTopics([1, 2]);
     await dbSubjects[1].addTopics([3]);
     await dbSubjects[2].addTopics([4, 5]);
+    await dbTopics[0].addCards([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    await dbStudents[0].addCards([1, 2, 3, 4, 5, 6, 7, 8, 9, 10]);
+    await dbTopics[1].addCards([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    await dbStudents[1].addCards([11, 12, 13, 14, 15, 16, 17, 18, 19, 20]);
+    await dbTopics[3].addCards([21, 22, 23, 24, 25, 26, 27, 28, 29, 30]);
+    await dbStudents[0].addCards([21, 22, 23, 24, 25, 26, 27, 28, 29, 30])
+    await dbTopics[4].addCards([31, 32, 33, 34, 35])
+    await dbStudents[0].addCards([31, 32, 33, 34, 35])
     console.log(`Seeding completed :)`);
     process.exit(0)
 };
