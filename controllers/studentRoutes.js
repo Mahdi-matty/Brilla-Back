@@ -135,6 +135,7 @@ router.get("/session/student", (req, res) => {
 //       res.json({ msg: 'Logout successful' });
 //     });
 // });
+
 // GET logout route
 // router.get("/logout", (req, res) => {
 //     req.session.destroy();
