@@ -30,16 +30,15 @@ router.get("/find/:id",(req,res)=>{
 })
 
 //create
-router.post("/",(req,res)=>{
+router.post("/", withTokenAuth,(req,res)=>{
     Subject.create({
         title:req.body.title,
+        StudentId: req.tokenData.id
     }).then(newSubject=>{
         res.json(newSubject)
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
-    // Add the subject to the logged user's profile
-
 })
 
 //edit
