@@ -108,17 +108,11 @@ router.post("/login",(req,res)=>{
     })
 });
 
-// get token info
-router.get(`/test`, (req, res) => {
-    res.send(`route is working`)
-})
-
 // Find Session User
 router.get("/logged-user", withTokenAuth, (req, res) => {
     Student.findByPk(req.tokenData.id, {
         include: [Subject, Card]
     }).then(dbStudent => {
-        console.log("reaaaaaa")
         if (!dbStudent) {
             res.status(404).json({ msg: "no such student!!!!" })
         } else {

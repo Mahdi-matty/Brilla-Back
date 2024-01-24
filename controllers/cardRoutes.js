@@ -14,7 +14,7 @@ router.get("/",(req,res)=>{
 });
 
 //find one
-router.get("/:id",(req,res)=>{
+router.get("/find/:id",(req,res)=>{
     Card.findByPk(req.params.id,{
         include:[Topic, Student]
     }).then(dbCard=>{
@@ -42,7 +42,7 @@ router.post("/",(req,res)=>{
     // Add the card to the logged in user's profile
 
     // Add the card to the topic in which it was created
-    
+
 })
 
 //edit

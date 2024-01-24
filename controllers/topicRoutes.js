@@ -12,7 +12,7 @@ router.get("/",(req,res)=>{
 });
 
 //find one
-router.get("/:id",(req,res)=>{
+router.get("/find/:id",(req,res)=>{
     Topic.findByPk(req.params.id,{
         include:[Subject, Card]
     }).then(dbTopic=>{
