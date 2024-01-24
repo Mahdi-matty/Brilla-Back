@@ -37,6 +37,8 @@ router.post("/",(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
+    // Add the subject to the logged user's profile
+    
 })
 
 //edit

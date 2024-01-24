@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
+const withTokenAuth = require('../middleware/withTokenAuth');
 
 router.get("/",(req,res)=>{
      res.render("home")        
@@ -21,6 +22,10 @@ router.use(`/api/subjects`, subjectRoutes);
 const topicRoutes = require(`./topicRoutes`);
 router.use(`/api/topics`, topicRoutes)
 
+// get token info
+router.get(`/test`, (req, res) => {
+     res.send(`route is working`)
+ })
 // router.get("/sessiondata",(req,res)=>{
 //     res.json(req.session)
 // });

@@ -3,6 +3,7 @@ const router = express.Router();
 const bcrypt = require('bcryptjs');
 const {Student, Subject, Card} = require('../models');
 const jwt = require("jsonwebtoken");
+const withTokenAuth = require('../middleware/withTokenAuth');
 
 //find all
 router.get("/",(req,res)=>{
@@ -14,12 +15,12 @@ router.get("/",(req,res)=>{
 })
 
 //find one
-router.get("/:id",(req,res)=>{
+router.get("/find/:id",(req,res)=>{
     Student.findByPk(req.params.id,{
         include:[Subject, Card]
     }).then(dbUser=>{
         if(!dbUser){
-            res.status(404).json({msg:"no such user!"})
+            res.status(404).json({msg:"no such one user id!"})
         } else{
             res.json(dbUser)
         }
@@ -70,7 +71,7 @@ router.delete("/:id",(req,res)=>{
         }
     }).then(delUser=>{
         if(!delUser){
-            res.status(404).json({msg:"no such user!"})
+            res.status(404).json({msg:"no such user to delete!"})
         } else{
             res.json(delUser)
         }
@@ -92,7 +93,8 @@ router.post("/login",(req,res)=>{
         };
         const token = jwt.sign({
             email:foundUser.email,
-            id:foundUser.id
+            id:foundUser.id,
+            username: foundUser.username
         },process.env.JWT_SECRET,{
             expiresIn:"2h"
         })
@@ -106,13 +108,19 @@ router.post("/login",(req,res)=>{
     })
 });
 
+// get token info
+router.get(`/test`, (req, res) => {
+    res.send(`route is working`)
+})
+
 // Find Session User
-router.get("/session/student", (req, res) => {
-    Student.findByPk(req.session.student.id, {
+router.get("/logged-user", withTokenAuth, (req, res) => {
+    Student.findByPk(req.tokenData.id, {
         include: [Subject, Card]
     }).then(dbStudent => {
+        console.log("reaaaaaa")
         if (!dbStudent) {
-            res.status(404).json({ msg: "no such Student!" })
+            res.status(404).json({ msg: "no such student!!!!" })
         } else {
             res.json(dbStudent)
         }
@@ -121,66 +129,19 @@ router.get("/session/student", (req, res) => {
     })
 });
 
-
-// // GET logout route
-// router.get('/logout', (req, res) => {
-//     // Invalidate the user's session or delete the session token stored on the client-side
-//     req.session.destroy((err) => {
-//       if (err) {
-//         return res.status(500).json({ msg: 'Failed to logout' });
-//       }  
-//       // Clear the session token from a cookie or local storage
-//       res.clearCookie('sessionToken');  
-//       // Send a response indicating successful logout
-//       res.json({ msg: 'Logout successful' });
-//     });
-// });
-
+// Why is the logged-user still works after running the logout route?
 // GET logout route
-// router.get("/logout", (req, res) => {
-//     req.session.destroy();
-//     console.log("Logged out!");
-//     res.send("Logged out!");
-// });
-
-// router.get('/getUserIdByUsername/:username', async (req, res) => {
-//     try {
-//       const username = req.params.username;
-//       const user = await Student.findOne({
-//         where: { username: username },
-//         attributes: ['id'],
-//       });
-  
-//       if (user) {
-//         res.json({ userId: user.id });
-//       } else {
-//         res.status(404).json({ error: 'Student not found' });
-//       }
-//     } catch (error) {
-//       console.error('Error:', error.message);
-//       res.status(500).json({ error: 'Internal Server Error' });
-//     }
-//   });
-
-// //find by username
-// router.get("/findUser/:id",(req,res)=>{
-//     Student.findOne({
-//         include:[Posts, Likes],
-//         where: {
-//             id: req.params.id,
-//     }}).then(foundUser=>{
-//         if(!foundUser){
-//             res.status(404).json({msg:"no such user!"})
-//         } else{
-//             res.render("foundUser",
-//             {
-//                 users:foundUser.toJSON()
-//             })
-//             // res.json(foundUser)
-//         }
-//     }).catch(err=>{
-//         res.status(500).json({msg:"oh no!",err})
-//     })
-// });
+router.get('/logout', withTokenAuth, (req, res) => {
+    // Invalidate the user's session or delete the session token stored on the client-side
+    req.session.destroy((err) => {
+      if (err) {
+        return res.status(500).json({ msg: 'Failed to logout' });
+      }  
+      // Clear the session token from a cookie or local storage
+      res.clearCookie('sessionToken');  
+      // Send a response indicating successful logout
+      res.json({ msg: 'Logout successful' });
+    });
+});
 
 module.exports = router;

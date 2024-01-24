@@ -35,6 +35,7 @@ router.post("/",(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
+    // Add the topic to the subject in which it was created
 })
 
 //edit

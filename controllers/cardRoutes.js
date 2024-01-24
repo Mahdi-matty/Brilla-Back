@@ -39,6 +39,10 @@ router.post("/",(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
+    // Add the card to the logged in user's profile
+
+    // Add the card to the topic in which it was created
+    
 })
 
 //edit
