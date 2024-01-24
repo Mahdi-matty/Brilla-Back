@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const {Student, Topic, Subject, Card} = require('../models');
+const withTokenAuth = require('../middleware/withTokenAuth');
 
 //find all
 router.get("/",(req,res)=>{
@@ -14,7 +15,7 @@ router.get("/",(req,res)=>{
 });
 
 //find one
-router.get("/:id",(req,res)=>{
+router.get("/find/:id",(req,res)=>{
     Card.findByPk(req.params.id,{
         include:[Topic, Student]
     }).then(dbCard=>{
@@ -29,11 +30,13 @@ router.get("/:id",(req,res)=>{
 })
 
 //create
-router.post("/",(req,res)=>{
+router.post("/", withTokenAuth, (req,res)=>{
     Card.create({
         title: req.body.title,
         content: req.body.content,
-        difficulty: req.body.difficulty
+        difficulty: req.body.difficulty,
+        StudentId: req.tokenData.id,
+        TopicId: req.body.TopicId
     }).then(newCard=>{
         res.json(newCard)
     }).catch(err=>{
@@ -98,57 +101,6 @@ router.delete("/:id",(req,res)=>{
 //     })
 // });
 
-// const isAuthenticated = (req, res, next) => {
-//   if (!req.session.user) {
-//     res.status(403).json({ msg: "Login first to perform this action!" });
-//   } else {
-//     next();
-//   }
-// };
-
-// // function extractHashtags(text) {
-// //   const regex = /#(\w+)/g;
-// //   console.log("Extracted Hashtags:", regex);
-// //   const matches = text.match(regex);
-// //   return matches ? matches.join(",") : null;
-// // }
-// router.post("/", isAuthenticated, (req, res) => {
-//   const { title, content, user_id } = req.body;
-//   console.log("Received Request Data:", { title, content, user_id });
-// //   const hashtags = extractHashtags(title);
-//   Card.create({
-//     title,
-//     content,
-//     user_id,
-//     // hashtags,
-//   })
-//     .then((newCard) => {
-//       res.json(newCard);
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ msg: "oh no!", err });
-//     });
-// });
-
-// router.get('/search', (req, res) => {
-//   const { tag } = req.query;
-//   console.log('Received Search Query:', tag);
-  
-//   Card.findAll({
-//     where: {
-//       title: {
-//         [Op.like]: `%#${tag}%`,
-//       },
-//     }})
-//     .then((searchResults) => {
-//       console.log('Search Results:', searchResults);
-//       res.json(searchResults);
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ msg: "Error during search", err });
-//     });
-// });
-
 // //edit
 // router.put("/:id", isAuthenticated, (req, res) => {
 //   Card.update(
@@ -177,23 +129,4 @@ router.delete("/:id",(req,res)=>{
 //   });
 // });
 
-// //delete
-// router.delete("/:id", isAuthenticated, (req, res) => {
-//   Card.destroy({
-//     where: {
-//       id: req.params.id,
-//     },
-//   })
-//     .then((delCard) => {
-//       if (!delCard) {
-//         res.status(404).json({ msg: "no such Card!" });
-//       } else {
-//         res.json(delCard);
-//       }
-//     })
-//     .catch((err) => {
-//       res.status(500).json({ msg: "oh no!", err });
-//     });
-// });
-  
 module.exports = router;
