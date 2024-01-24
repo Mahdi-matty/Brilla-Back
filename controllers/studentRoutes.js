@@ -138,4 +138,19 @@ router.get('/logout', withTokenAuth, (req, res) => {
     });
 });
 
+// Show all the cards of the logged in Student
+router.get("/find-cards", withTokenAuth, (req,res)=>{
+    Student.findByPk(req.tokenData.id, {
+        include: [Card]
+    }).then(dbStudent => {
+        if (!dbStudent) {
+            res.status(404).json({ msg: "no such student!!!!" })
+        } else {
+            res.json(dbStudent.Cards)
+        }
+    }).catch(err => {
+        res.status(500).json({ msg: "oh no!", err })
+    })
+})
+
 module.exports = router;
