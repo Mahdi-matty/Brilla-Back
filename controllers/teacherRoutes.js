@@ -11,9 +11,9 @@ router.get("/",(req,res)=>{
         res.status(500).json({msg:"oh no!",err})
     })
 })
-router.get("/logout",(req,res)=>{
-    req.session.destroy();
-    res.send("logged out!")
-})
+// router.get("/logout",(req,res)=>{
+//     req.session.destroy();
+//     res.send("logged out!")
+// })
 
 module.exports = router;
