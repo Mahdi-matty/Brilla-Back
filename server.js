@@ -1,7 +1,5 @@
-const session = require("express-session");
 const express = require("express");
 const sequelize = require('./config/connection');
-const SequelizeStore = require('connect-session-sequelize')(session.Store);
 const nodemailer = require('nodemailer');
 const bodyParser = require('body-parser');
 const allRoutes = require('./controllers/');
@@ -9,18 +7,6 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 const cors = require('cors');
 app.use(cors());
-
-const sess = {
-    secret: process.env.SESSION_SECRET,
-    cookie: {
-        maxAge:1000*60*60*2
-    },
-    resave: false,
-    saveUninitialized: true,
-    store: new SequelizeStore({
-        db: sequelize
-    })
-};
 
 app.use(bodyParser.json())
 app.post('/api/send-email', async (req, res) => {
@@ -51,12 +37,8 @@ const transporter = nodemailer.createTransport({
       }
     });
 
-app.use(session(sess));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-
-// Static directory
-app.use(express.static('public'));
 
 app.use(`/`, allRoutes)
 
