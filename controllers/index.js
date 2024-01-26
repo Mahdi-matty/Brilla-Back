@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const withTokenAuth = require('../middleware/withTokenAuth');
+const { Topic, Teacher, Subject, Student, Card } = require(`../models`)
 
 router.get("/",(req,res)=>{
      res.render("home")        
