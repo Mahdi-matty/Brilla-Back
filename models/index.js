@@ -1,8 +1,8 @@
-const Teacher = require('./Teacher');
-const Student = require('./Student');
-const Subject = require(`./Subject`);
-const Topic = require('./Topic');
-const Card = require('./Card')
+const Teacher = require('./teacher');
+const Student = require('./student');
+const Subject = require(`./subject`);
+const Topic = require('./topic');
+const Card = require('./card')
 
 // students and subjects
 Student.hasMany(Subject, {
