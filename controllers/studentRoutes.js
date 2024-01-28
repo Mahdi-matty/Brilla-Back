@@ -4,15 +4,25 @@ const bcrypt = require('bcryptjs');
 const {Student, Subject, Card} = require('../models');
 const jwt = require("jsonwebtoken");
 const withTokenAuth = require('../middleware/withTokenAuth');
+const Sequlize= require('../config/connection')
 
 //find all
-router.get("/",(req,res)=>{
-    Student.findAll().then(dbStudents=>{
-        res.json(dbStudents)
-    }).catch(err=>{
-        res.status(500).json({msg:"oh no!",err})
-    })
-})
+router.get("/", async (req, res) => {
+    const { prefix } = req.query;
+    try {
+        const users = await Student.findAll({
+            attributes: ['username']
+        });
+        const filteredUsernames = users
+            .map(user => user.username)
+            .filter(username => username.startsWith(prefix));
+
+        res.json(filteredUsernames);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
 
 //find one
 router.get("/find/:id",(req,res)=>{
