@@ -5,7 +5,7 @@ const withTokenAuth = require('../middleware/withTokenAuth');
 const { Topic, Teacher, Subject, Student, Card } = require(`../models`)
 
 router.get("/",(req,res)=>{
-     res.render("home")        
+     res.send(`Hi`)   
 });
 
 const studentRoutes = require('./studentRoutes');
