@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {Student, Topic, Subject, Card} = require('../models');
 const withTokenAuth = require('../middleware/withTokenAuth');
+const { Op } = require('sequelize');
 
 //find all
 router.get("/",(req,res)=>{
@@ -80,6 +81,61 @@ router.delete("/:id",(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
+}); 
+
+// get the cards for a quiz (including multiple difficulties)
+router.get("/find-cards/:topicId/:cardDifficulty",(req,res)=>{
+    // which difficulties does the user want? 1, 2, 3, 12, 23, 13, 123
+    const difficulty = req.params.cardDifficulty;
+    if(difficulty.length === 1){
+        Card.findAll({
+            where: {
+                TopicId: req.params.topicId,
+                difficulty: difficulty
+            }
+        }).then(dbCard=>{
+            if(!dbCard){
+                res.status(404).json({msg:"no such Card!"})
+            } else{
+                res.json(dbCard)
+            }
+        }).catch(err=>{
+            res.status(500).json({msg:"oh no!",err})
+        });
+    } else if (difficulty.length === 2){
+        const diffArray = difficulty.split(``)
+        Card.findAll({
+            where: {
+                TopicId: req.params.topicId,
+                [Op.or]:[
+                    {difficulty: diffArray[0]},
+                    {difficulty: diffArray[1]}
+                ]
+            }
+        }).then(dbCard=>{
+            if(!dbCard){
+                res.status(404).json({msg:"no such Card!"})
+            } else{
+                res.json(dbCard)
+            }
+        }).catch(err=>{
+            res.status(500).json({msg:"oh no!",err})
+        });
+    } else {
+        Card.findAll({
+            where: {
+                TopicId: req.params.topicId,
+            }
+        }).then(dbCard=>{
+            if(!dbCard){
+                res.status(404).json({msg:"no such Card!"})
+            } else{
+                res.json(dbCard)
+            }
+        }).catch(err=>{
+            res.status(500).json({msg:"oh no!",err})
+        });
+    };
 });
 
 
