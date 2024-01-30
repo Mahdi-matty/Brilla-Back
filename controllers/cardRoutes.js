@@ -85,6 +85,27 @@ router.delete("/:id",(req,res)=>{
     })
 }); 
 
+// Show all the cards in a topic
+router.get("/find-by-topic/:TopicId",(req,res)=>{
+    Card.findAll({
+        where: {
+            TopicId: req.params.TopicId,
+            [Op.or]:[
+                {status: `accepted`},
+                {status: `origin`}
+            ]    
+        }        
+    }).then(dbCards=>{
+        if(!dbCards){
+            res.status(404).json({msg:"no such Cards!"})
+        } else{
+            res.json(dbCards)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+});
+
 // get the cards for a quiz (including multiple difficulties)
 router.get("/find-cards/:topicId/:cardDifficulty",(req,res)=>{
     // which difficulties does the user want? 1, 2, 3, 12, 23, 13, 123
@@ -165,7 +186,46 @@ router.post("/send/:cardId/:receiverId", withTokenAuth,(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
+});
+
+//receive a card (by adding a topic). Change the status to from pending to accepted
+// Adding a topic will automatically add a subject
+router.put("/accept-card/:CardId/:TopicId",(req,res)=>{
+    Card.update({
+        status: `accepted`,
+        TopicId: req.params.TopicId
+    },{
+        where:{
+            id:req.params.CardId
+        }
+    }).then(editCard=>{
+        if(!editCard[0]){
+            res.status(404).json({msg:"no such Card!"})
+        } else{
+            res.json(editCard[0])
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
 })
+
+// Show all pending cards in a Student's profile
+router.get("/find-pending",withTokenAuth, (req,res)=>{
+    Card.findAll({
+        where: {
+            StudentId: req.tokenData.id,
+            status: `pending`
+        }        
+    }).then(dbCards=>{
+        if(!dbCards){
+            res.status(404).json({msg:"no such Cards!"})
+        } else{
+            res.json(dbCards)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+});
 
 // //query or route to find cards linked to a single user
 // router.get("/:id",(req,res)=>{
@@ -183,34 +243,6 @@ router.post("/send/:cardId/:receiverId", withTokenAuth,(req,res)=>{
 //     }).catch(err=>{
 //         res.status(500).json({msg:"oh no!",err})
 //     })
-// });
-
-// //edit
-// router.put("/:id", isAuthenticated, (req, res) => {
-//   Card.update(
-//     {
-//       title: req.body.title,
-//       content: req.body.content,
-//       user_id: req.body.user_id,
-//       UserId: req.session.user.id,
-//     },
-//     {
-//       where: {
-//         id: req.params.id,
-//         UserId:req.session.user.id
-//       },
-//     }
-//   )
-//   .then((editedCard) => {
-//     if (!editedCard[0]) {
-//       res.status(404).json({ msg: "no such Like!" });
-//     } else {
-//       res.json(editedCard);
-//     }
-//   })
-//   .catch((err) => {
-//     res.status(500).json({ msg: "oh no!", err });
-//   });
 // });
 
 module.exports = router;

@@ -75,20 +75,4 @@ router.delete("/:id",(req,res)=>{
     })
 });
 
-// Show all the cards in a topic
-// To-do: update route to render cards that have already been accepted by the user
-router.get("/find-cards/:id",(req,res)=>{
-    Topic.findByPk(req.params.id,{
-        include:[Card]
-    }).then(dbTopic=>{
-        if(!dbTopic){
-            res.status(404).json({msg:"no such Topic!"})
-        } else{
-            res.json(dbTopic.Cards)
-        }
-    }).catch(err=>{
-        res.status(500).json({msg:"oh no!",err})
-    })
-});
-
 module.exports = router;
