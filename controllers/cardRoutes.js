@@ -37,7 +37,9 @@ router.post("/", withTokenAuth, (req,res)=>{
         content: req.body.content,
         difficulty: req.body.difficulty,
         StudentId: req.tokenData.id,
-        TopicId: req.body.TopicId
+        TopicId: req.body.TopicId,
+        status: `origin`,
+        sentBy: null,
     }).then(newCard=>{
         res.json(newCard)
     }).catch(err=>{
@@ -138,6 +140,32 @@ router.get("/find-cards/:topicId/:cardDifficulty",(req,res)=>{
     };
 });
 
+// send a card to another user
+router.post("/send/:cardId/:receiverId", withTokenAuth,(req,res)=>{
+    Card.findByPk(req.params.cardId)
+    .then(dbCard=>{
+        if(!dbCard){
+            res.status(404).json({msg:"no such Card!"})
+        } else{
+            const newCardObj = {
+                title: dbCard.title,
+                content: dbCard.content,
+                difficulty: dbCard.difficulty,
+                status: `pending`,
+                StudentId: req.params.receiverId,
+                sentBy: req.tokenData.username
+            }
+            Card.create(newCardObj)
+                .then(newCard=>{
+                    res.json(newCard)
+                }).catch(err=>{
+                    res.status(500).json({msg:"oh no! Error creating the copy",err})
+                })
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
 
 // //query or route to find cards linked to a single user
 // router.get("/:id",(req,res)=>{

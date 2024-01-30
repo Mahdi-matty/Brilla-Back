@@ -15,7 +15,16 @@ Card.init({
     difficulty: {
       type: DataTypes.INTEGER,
       allowNull: false,
+    },
+    status: {
+      type: DataTypes.STRING,
+      allowNull: false
+    },
+    sentBy: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
+    // status will be origin, pending, accepted
   },
   {
     sequelize,

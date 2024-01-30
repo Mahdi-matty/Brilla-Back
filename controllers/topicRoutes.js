@@ -76,6 +76,7 @@ router.delete("/:id",(req,res)=>{
 });
 
 // Show all the cards in a topic
+// To-do: update route to render cards that have already been accepted by the user
 router.get("/find-cards/:id",(req,res)=>{
     Topic.findByPk(req.params.id,{
         include:[Card]
