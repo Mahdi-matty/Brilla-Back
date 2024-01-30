@@ -85,6 +85,28 @@ router.delete("/:id",(req,res)=>{
     })
 }); 
 
+// Show all the cards in a topic
+router.get("/find-by-topic/:TopicId",(req,res)=>{
+    Card.findAll({
+        where: {
+            TopicId: req.params.TopicId,
+            [Op.or]:[
+                {status: `accepted`},
+                {status: `origin`}
+            ]    
+        }        
+    }).then(dbCards=>{
+        console.log(dbCards);
+        if(!dbCards){
+            res.status(404).json({msg:"no such Cards!"})
+        } else{
+            res.json(dbCards)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+});
+
 // get the cards for a quiz (including multiple difficulties)
 router.get("/find-cards/:topicId/:cardDifficulty",(req,res)=>{
     // which difficulties does the user want? 1, 2, 3, 12, 23, 13, 123
