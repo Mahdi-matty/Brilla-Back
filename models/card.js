@@ -19,6 +19,10 @@ Card.init({
     status: {
       type: DataTypes.STRING,
       allowNull: false
+    },
+    sentBy: {
+      type: DataTypes.STRING,
+      allowNull: true
     }
     // status will be origin, pending, accepted
   },

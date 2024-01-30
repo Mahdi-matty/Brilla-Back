@@ -163,4 +163,21 @@ router.get("/find-cards", withTokenAuth, (req,res)=>{
     })
 })
 
+// get the student id from the username
+router.get("/findId/:studentUsername",(req,res)=>{
+    Student.findAll({
+        where: {
+            username: req.params.studentUsername
+        },
+    }).then(dbUser=>{
+        if(!dbUser){
+            res.status(404).json({msg:"no such one user id!"})
+        } else{
+            res.json(dbUser)
+        }
+    }).catch(err=>{
+        res.status(500).json({msg:"oh no!",err})
+    })
+})
+
 module.exports = router;
