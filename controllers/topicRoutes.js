@@ -75,4 +75,28 @@ router.delete("/:id",(req,res)=>{
     })
 });
 
+// Show all the topics of the logged in Student
+router.get("/student-topics", withTokenAuth, (req, res) => {
+    Subject.findAll({
+        where: {
+            StudentId: req.tokenData.id
+        },
+        include: [Topic]
+    }).then(dbSubjects => {
+        if (!dbSubjects) {
+            res.status(404).json({ msg: "no such Subjects!!!!" })
+        } else {
+            const topics = [];
+            for(let subject of dbSubjects){
+                for(let topic of subject.Topics){
+                    topics.push(topic)
+                }
+            }
+            res.json(topics)
+        }
+    }).catch(err => {
+        res.status(500).json({ msg: "oh no!", err })
+    })
+});
+
 module.exports = router;

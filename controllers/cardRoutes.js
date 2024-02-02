@@ -207,7 +207,7 @@ router.put("/accept-card/:CardId/:TopicId",(req,res)=>{
     }).catch(err=>{
         res.status(500).json({msg:"oh no!",err})
     })
-})
+});
 
 // Show all pending cards in a Student's profile
 router.get("/find-pending",withTokenAuth, (req,res)=>{
