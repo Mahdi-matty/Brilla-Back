@@ -2,7 +2,9 @@ const express = require('express');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
 const withTokenAuth = require('../middleware/withTokenAuth');
-const { Topic, Teacher, Subject, Student, Card } = require(`../models`)
+const { Topic, Teacher, Subject, Student, Card } = require(`../models`);
+const transporter = require(`../helpers/mailer`)
+require('dotenv').config();
 
 router.get("/",(req,res)=>{
      res.send(`Hi`)   
@@ -26,54 +28,22 @@ router.use(`/api/topics`, topicRoutes)
 // get token info
 router.get(`/test`, (req, res) => {
      res.send(`route is working`)
- })
-// router.get("/sessiondata",(req,res)=>{
-//     res.json(req.session)
-// });
+});
 
-// router.post("/student/login",(req,res)=>{
-//     User.findOne({
-//         where:{
-//             username:req.body.username,
-//         }
-//     }).then(foundUser=>{
-//         if(!foundUser){
-//             res.status(401).json({msg:"Invalid username/password"})
-//         } else {
-//             if(!bcrypt.compareSync(req.body.password,foundUser.password)){
-//                 res.status(401).json({msg:"Invalid username/password"})
-//             } else {
-//                 req.session.user = {
-//                     id:foundUser.id,
-//                     username:foundUser.username
-//                 }
-//                 res.json(foundUser)
-//             }
-//         }
-//     })
-// });
+// send email - test route - sendgrid
 
-// router.post("/teachers/login",(req,res)=>{
-//     User.findOne({
-//         where:{
-//             teachername:req.body.teachername,
-//         }
-//     }).then(foundUser=>{
-//         if(!foundUser){
-//             res.status(401).json({msg:"Invalid username/password"})
-//         } else {
-//             if(!bcrypt.compareSync(req.body.password,foundUser.password)){
-//                 res.status(401).json({msg:"Invalid username/password"})
-//             } else {
-//                 req.session.teacher = {
-//                     id:foundUser.id,
-//                     teachername:foundUser.teachername
-//                 }
-//                 res.json(foundUser)
-//             }
-//         }
-//     })
-// });
+
+// send email - test route
+// router.get(`api/send-email/:email`, withTokenAuth, (req, res) => {
+//      transporter.sendMail({
+//           from: process.env.EMAIL,
+//           to: req.params.email,
+//           subject: `Test Email`,
+//           body:`this is a test email`
+//      });
+//      res.status(200).json({ok: true, message: `Email sent :)`})
+// })
+
 
 // router.get("/students/profile",(req,res)=>{
 //     if(!req.session.user){
@@ -109,15 +79,6 @@ router.get(`/test`, (req, res) => {
 //             res.status(500).json({msg:"oh no!",err})
 //         })
 //     }
-// });
-
-// router.get("/logout",(req,res)=>{
-//     req.session.destroy();
-//     res.render("logout")
-// })
-
-// router.get("/signup",(req,res)=>{
-//     res.render("signup")
 // });
 
 module.exports = router;
