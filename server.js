@@ -5,10 +5,54 @@ const bodyParser = require('body-parser');
 const allRoutes = require('./controllers/');
 const PORT = process.env.PORT || 3001;
 const app = express();
+require('dotenv').config();
 const cors = require('cors');
 app.use(cors());
 
+const fetch = (...args) =>{
+    import('node-fetch').then(({default: fetch})=> fetch(...args))
+}
+
 app.use(bodyParser.json())
+
+const CLIENT_ID = '560f1c16a1a52dfe50c0';
+const CLIENT_SECRET = process.env.Client_Sec
+
+app.get('/getAccessToken', async function(req, res){
+    try {
+        console.log(req.query.code);
+        const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
+        const response = await fetch('https://github.com/login/oauth/access_token'+ params, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+        console.log(response)
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching access token:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.get('/getUserData', async function (req, res){
+    const authorizationHeader = req.get('Authorization');
+ await fetch('https://api.github.com/user', {
+    method : 'GET',
+    headers : {
+        'Authorization' : authorizationHeader
+    }
+ }).then((response)=>{
+    return response.json()
+}).then((data)=>{
+    res.json(data)
+}).catch((error)=>{
+    console.log(error);
+    res.status(500).json({error: 'itnernal server eror'})
+})
+})
 // app.post('/api/send-email', async (req, res) => {
 //     const { email, authCode } = req.body;
 //  const transporter = nodemailer.createTransport({
