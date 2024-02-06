@@ -34,15 +34,15 @@ router.get(`/test`, (req, res) => {
 
 
 // send email - test route
-// router.get(`api/send-email/:email`, withTokenAuth, (req, res) => {
-//      transporter.sendMail({
-//           from: process.env.EMAIL,
-//           to: req.params.email,
-//           subject: `Test Email`,
-//           body:`this is a test email`
-//      });
-//      res.status(200).json({ok: true, message: `Email sent :)`})
-// })
+router.post(`api/send-email/:email`, withTokenAuth, async (req, res) => {
+     const result = await transporter.sendMail({
+          from: process.env.EMAIL,
+          to: req.params.email,
+          subject: `Test Email`,
+          body:`this is a test email`
+     })
+     res.status(200).json({ok: true, message: `Email sent :)`})
+})
 
 
 // router.get("/students/profile",(req,res)=>{
