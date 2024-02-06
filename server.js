@@ -15,47 +15,47 @@ const fetch = (...args) =>
 
 app.use(bodyParser.json())
 
-const CLIENT_ID = '560f1c16a1a52dfe50c0';
-const CLIENT_SECRET = process.env.CLIENT_SEC
+// const CLIENT_ID = '560f1c16a1a52dfe50c0';
+// const CLIENT_SECRET = process.env.CLIENT_SEC
 
-app.get('/getAccessToken', async function(req, res){
-    try {
-        const params = new URLSearchParams({
-            client_id: CLIENT_ID,
-            client_secret: CLIENT_SECRET,
-            code: req.query.code
-        });
+// app.get('/getAccessToken', async function(req, res){
+//     try {
+//         const params = new URLSearchParams({
+//             client_id: CLIENT_ID,
+//             client_secret: CLIENT_SECRET,
+//             code: req.query.code
+//         });
     
-        const response = await fetch('https://github.com/login/oauth/access_token', {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/x-www-form-urlencoded'
-            },
-            body: params
-        });
-        // console.log(req.query.code);
-        // const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
-        // const response = await fetch('https://github.com/login/oauth/access_token'+ params, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Accept': 'application/json'
-        //     }
-        // });
-        if (!response) {
-            throw new Error('Failed to fetch response');
-        }
-        if (!response.ok) {
-            throw new Error('Failed to fetch access token');
-        }
-        console.log(response)
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        console.error('Error fetching access token:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-});
+//         const response = await fetch('https://github.com/login/oauth/access_token', {
+//             method: 'POST',
+//             headers: {
+//                 'Accept': 'application/json',
+//                 'Content-Type': 'application/x-www-form-urlencoded'
+//             },
+//             body: params
+//         });
+//         // console.log(req.query.code);
+//         // const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
+//         // const response = await fetch('https://github.com/login/oauth/access_token'+ params, {
+//         //     method: 'POST',
+//         //     headers: {
+//         //         'Accept': 'application/json'
+//         //     }
+//         // });
+//         if (!response) {
+//             throw new Error('Failed to fetch response');
+//         }
+//         if (!response.ok) {
+//             throw new Error('Failed to fetch access token');
+//         }
+//         console.log(response)
+//         const data = await response.json();
+//         res.json(data);
+//     } catch (error) {
+//         console.error('Error fetching access token:', error);
+//         res.status(500).json({ error: 'Internal server error' });
+//     }
+// });
 // app.get('/getAccessToken', async function(req, res){
 //     console.log(req.query.code);
 //     const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
