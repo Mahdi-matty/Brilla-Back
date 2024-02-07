@@ -37,7 +37,19 @@ router.post("/",(req,res)=>{
         password:req.body.password,
         email: req.body.email,
     }).then(newUser=>{
+        const token = jwt.sign({
+            email:newUser.email,
+            id:newUser.id,
+            username: newUser.username
+        },process.env.JWT_SECRET,{
+            expiresIn:"2h"
+        })
+        res.json({
+            token,
+            student:newUser
+        })
         res.json(newUser)
+
     }).catch(err=>{
         console.log(err)
         res.status(500).json({msg:"oh no!",err})
