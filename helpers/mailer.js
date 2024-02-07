@@ -24,16 +24,17 @@ const sendMail = async () => {
           clientSecret: process.env.CLIENT_SECRET,
           refreshToken: "1//04Fyj5itNSx3jCgYIARAAGAQSNgF-L9IrcQaVocBuTN8W80FAdJ9nBsQt79Gs2nkYTbyIgTSCc3E7touYMvhmPq06AK_XRCNcRg",
           accessToken: accessToken
-      }
-    
-        // host: "smtp.office365.com",
-        // port: 587,
-        // secure: false,
-        // auth: {
-        //   user: process.env.EMAIL,
-        //   pass: process.env.EMAIL_PASSWORD,
-        // },
+      }    
     });
+
+    const mailOptions = {
+      from: `Brilla-Mente ${accountTransport.auth.user}`,
+      to: req.params.email,
+      subject: `You have received a flash card`,
+      body: `test email`
+    }
+
+    const result = await transporter.sendMail(mailOptions);
 
     // verify connection configuration
     transporter.verify(function (error, success) {
@@ -43,6 +44,8 @@ const sendMail = async () => {
         console.log("Server is ready to take our messages");
       }
     });
+
+    return result;
 
   } catch (err) {
     console.log(err);
