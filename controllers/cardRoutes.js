@@ -186,62 +186,62 @@ router.post("/send/:cardId/:receiverId", withTokenAuth,(req,res)=>{
                     }
                     Card.create(newCardObj)
                         .then(newCard=>{
+                            // send notification email
+                            const oAuth2Client = new google.auth.OAuth2(
+                                accountTransport.auth.clientId,
+                                accountTransport.auth.clientSecret,
+                                "https://developers.google.com/oauthplayground",
+                             );
+                                
+                            oAuth2Client.setCredentials({refresh_token: accountTransport.auth.refreshToken});
+                        
+                            const sendMail = async () => {
+                                try{
+                                    const accessToken = await oAuth2Client.getAccessToken()
+                                    console.log(dbUser)
+                                    const transporter = nodemailer.createTransport({
+                                    service: "gmail",
+                                    auth: {
+                                        type: "OAuth2",
+                                        user: "brilla.mente119@gmail.com",
+                                        clientId: "1081860614942-35bler21rblrhncs0m6mi96ig2juru4b.apps.googleusercontent.com",
+                                        clientSecret: process.env.CLIENT_SECRET,
+                                        refreshToken: "1//04Fyj5itNSx3jCgYIARAAGAQSNgF-L9IrcQaVocBuTN8W80FAdJ9nBsQt79Gs2nkYTbyIgTSCc3E7touYMvhmPq06AK_XRCNcRg",
+                                        accessToken: accessToken
+                                    }    
+                                });
+                    
+                                const mailOptions = {
+                                from: `Brilla-Mente ${accountTransport.auth.user}`,
+                                to: `${dbUser.email}`,
+                                subject: `You have received a flash card`,
+                                text: `You have received a card from ${req.tokenData.username}. Please log into your Brilla-Mente account to accept it or reject it. https://65b31191c2b70f63d014aef8--brillamentee.netlify.app/`
+                                }
+                                console.log(dbUser.email);
+                                const result = await transporter.sendMail(mailOptions);
+                            
+                                // verify connection configuration
+                                transporter.verify(function (error, success) {
+                                if (error) {
+                                    console.log(error);
+                                } else {
+                                    console.log("Server is ready to take our messages");
+                                }
+                                });
+                                
+                                return result;
+                                
+                            } catch (err) {
+                                console.log(err);
+                            };
+                        };
+                        sendMail()
+                                .then(result=>res.status(200).send(`enviado`))
+                                .catch(error=>console.log(error.message))
                             res.json(newCard)
                         }).catch(err=>{
                             res.status(500).json({msg:"oh no! Error creating the copy",err})
                         })
-                    // send notification email
-                    const oAuth2Client = new google.auth.OAuth2(
-                        accountTransport.auth.clientId,
-                        accountTransport.auth.clientSecret,
-                        "https://developers.google.com/oauthplayground",
-                   );
-                        
-                   oAuth2Client.setCredentials({refresh_token: accountTransport.auth.refreshToken});
-                   
-                   const sendMail = async () => {
-                        try{
-                             const accessToken = await oAuth2Client.getAccessToken()
-                             console.log(dbUser)
-                             const transporter = nodemailer.createTransport({
-                             service: "gmail",
-                             auth: {
-                                  type: "OAuth2",
-                                  user: "brilla.mente119@gmail.com",
-                                  clientId: "1081860614942-35bler21rblrhncs0m6mi96ig2juru4b.apps.googleusercontent.com",
-                                  clientSecret: process.env.CLIENT_SECRET,
-                                  refreshToken: "1//04Fyj5itNSx3jCgYIARAAGAQSNgF-L9IrcQaVocBuTN8W80FAdJ9nBsQt79Gs2nkYTbyIgTSCc3E7touYMvhmPq06AK_XRCNcRg",
-                                  accessToken: accessToken
-                             }    
-                             });
-              
-                             const mailOptions = {
-                             from: `Brilla-Mente ${accountTransport.auth.user}`,
-                             to: `andresromerosilva05@gmail.com`,
-                             subject: `You have received a flash card`,
-                             text: `You have received a card from ${req.tokenData.username}. Please log into your Brilla-Mente account to accept it or reject it`
-                             }
-                        
-                             const result = await transporter.sendMail(mailOptions);
-                        
-                             // verify connection configuration
-                             transporter.verify(function (error, success) {
-                             if (error) {
-                                  console.log(error);
-                             } else {
-                                  console.log("Server is ready to take our messages");
-                             }
-                             });
-                        
-                             return result;
-                        
-                        } catch (err) {
-                             console.log(err);
-                        };
-                   };
-                   sendMail()
-                        .then(result=>res.status(200).send(`enviado`))
-                        .catch(error=>console.log(error.message))
                 }
             }).catch(err=>{
                 res.status(500).json({msg:"oh no!",err})

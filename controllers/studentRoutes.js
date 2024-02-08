@@ -50,7 +50,7 @@ router.post("/",(req,res)=>{
         })
         res.json(newUser)
 
-    }).catch(err=>{
+     }).catch(err=>{
         console.log(err)
         res.status(500).json({msg:"oh no!",err})
     })
