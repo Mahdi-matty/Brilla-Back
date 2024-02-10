@@ -313,7 +313,7 @@ for (let studentObj of studentData) {
 
 // Seeds Function 
 const seedMe = async () => {
-    await sequelize.sync({ force: false });
+    await sequelize.sync({ force: true });
     const dbStudents = await Student.bulkCreate(studentData);
     const dbSubjects = await Subject.bulkCreate(subjectData);
     const dbTopics = await Topic.bulkCreate(topicData);
