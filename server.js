@@ -15,8 +15,8 @@ const fetch = (...args) =>
 
 app.use(bodyParser.json())
 
-// const CLIENT_ID = '560f1c16a1a52dfe50c0';
-// const CLIENT_SECRET = process.env.CLIENT_SEC
+const CLIENT_ID = '560f1c16a1a52dfe50c0';
+const CLIENT_SECRET = process.env.CLIENT_SEC
 
 // app.get('/getAccessToken', async function(req, res){
 //     try {
@@ -56,25 +56,25 @@ app.use(bodyParser.json())
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // });
-// app.get('/getAccessToken', async function(req, res){
-//     console.log(req.query.code);
-//     const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
-//     await fetch('https://github.com/login/oauth/access_token'+ params, {
-//             method: 'POST',
-//             headers: {
-//                 'Accept': 'application/json'
-//             }
-//         }).then((response)=>{
-//             console.log(response);
-//             return response.json()
-//         }).then((data)=>{
-//             console.log(data);
-//             res.json(data)
-//         }).catch((error)=>{
-//             console.log(error)
-//             res.status(500).json({error: 'internal server error'})
-//         })
-// })
+app.get('/getAccessToken', async function(req, res){
+    console.log(req.query.code);
+    const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
+    await fetch('https://github.com/login/oauth/access_token'+ params, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json'
+            }
+        }).then((response)=>{
+            console.log(response);
+            return response.json()
+        }).then((data)=>{
+            console.log(data);
+            res.json(data)
+        }).catch((error)=>{
+            console.log(error)
+            res.status(500).json({error: 'internal server error'})
+        })
+})
 
 app.get('/getUserData', async function (req, res){
     const authorizationHeader = req.get('Authorization');
