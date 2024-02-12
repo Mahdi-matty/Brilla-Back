@@ -56,7 +56,6 @@ const CLIENT_SECRET = process.env.CLIENT_SEC
 //         res.status(500).json({ error: 'Internal server error' });
 //     }
 // });
-
 app.get('/getAccessToken', async function(req, res){
     console.log(req.query.code);
     const params = '?client_id='+ CLIENT_ID + '&client_secret=' + CLIENT_SECRET + '$code=' + req.query.code;
